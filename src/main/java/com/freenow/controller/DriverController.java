@@ -4,25 +4,14 @@ import com.freenow.controller.mapper.DriverMapper;
 import com.freenow.datatransferobject.DriverDTO;
 import com.freenow.domainobject.DriverDO;
 import com.freenow.domainvalue.OnlineStatus;
-import com.freenow.exception.ConstraintsViolationException;
-import com.freenow.exception.EntityNotFoundException;
 import com.freenow.service.driver.DriverService;
-import java.util.List;
-import javax.validation.Valid;
-
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * All operations with a driver will be routed by this controller.
@@ -30,22 +19,19 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("v1/drivers")
-public class DriverController
-{
+public class DriverController {
 
     private final DriverService driverService;
 
 
     @Autowired
-    public DriverController(final DriverService driverService)
-    {
+    public DriverController(final DriverService driverService) {
         this.driverService = driverService;
     }
 
     @ApiOperation("Get driver by ID")
     @GetMapping("/{driverId}")
-    public DriverDTO getDriver(@PathVariable long driverId) throws EntityNotFoundException
-    {
+    public DriverDTO getDriver(@PathVariable long driverId) {
         return DriverMapper.makeDriverDTO(driverService.find(driverId));
     }
 
@@ -53,8 +39,7 @@ public class DriverController
     @ApiOperation("Create driver")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public DriverDTO createDriver(@Valid @RequestBody DriverDTO driverDTO) throws ConstraintsViolationException
-    {
+    public DriverDTO createDriver(@Valid @RequestBody DriverDTO driverDTO) {
         DriverDO driverDO = DriverMapper.makeDriverDO(driverDTO);
         return DriverMapper.makeDriverDTO(driverService.create(driverDO));
     }
@@ -62,25 +47,40 @@ public class DriverController
 
     @ApiOperation("Delete driver by ID")
     @DeleteMapping("/{driverId}")
-    public void deleteDriver(@PathVariable long driverId) throws EntityNotFoundException
-    {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteDriver(@PathVariable long driverId) {
         driverService.delete(driverId);
     }
 
 
     @ApiOperation("Update driver location by ID")
     @PutMapping("/{driverId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateLocation(
-        @PathVariable long driverId, @RequestParam double longitude, @RequestParam double latitude)
-        throws EntityNotFoundException
-    {
+            @PathVariable long driverId, @RequestParam double longitude, @RequestParam double latitude) {
         driverService.updateLocation(driverId, longitude, latitude);
     }
 
 
+    @ApiOperation("Find drivers by their online status")
     @GetMapping
-    public List<DriverDTO> findDrivers(@RequestParam OnlineStatus onlineStatus)
-    {
+    public List<DriverDTO> findDrivers(@RequestParam OnlineStatus onlineStatus) {
         return DriverMapper.makeDriverDTOList(driverService.find(onlineStatus));
+    }
+
+
+    @ApiOperation("Select a car for a driver")
+    @PutMapping("/select")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void selectCarByDriver(@RequestParam long driverId, @RequestParam long carId) {
+        driverService.selectCarByDriver(driverId, carId);
+    }
+
+
+    @ApiOperation("Deselect car for a driver")
+    @PutMapping("/deselect")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deSelectCarByDriver(@RequestParam long driverId) {
+        driverService.deSelectCarByDriver(driverId);
     }
 }

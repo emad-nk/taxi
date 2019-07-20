@@ -40,3 +40,21 @@ values
  (8,
  'aced0005737200226f72672e737072696e676672616d65776f726b2e646174612e67656f2e506f696e7431b9e90ef11a4006020002440001784400017978704023000000000000404bfa1cac083127', now(), now(), false, 'ONLINE',
 'driver08pw', 'driver08');
+
+insert into car (id, car_selected_by_driver, convertible, date_car_created, date_rating_updated, deleted, engine_type, license_plate, manufacturer, rating, seat_count)
+values (2, true, true, now(), now(), false, 'GAS','GMB12',  'MERCEDES', 'FOUR', 4),
+       (3, true, true, now(), now(), false, 'GAS','GMB124',  'MERCEDES', 'FIVE', 4),
+       (4, false, true, now(), now(), false, 'DIESEL','GSR19',  'BMW', 'THREE', 3),
+       (5, false, true, now(), now(), false, 'GAS','POR22',  'PORSCHE', 'FIVE', 5);
+
+insert into driver (id, coordinate, date_coordinate_updated, date_created, deleted, online_status, password, username, car_id)
+values
+ (9,
+ 'aced0005737200226f72672e737072696e676672616d65776f726b2e646174612e67656f2e506f696e7431b9e90ef11a4006020002440001784400017978704023000000000000404bfa1cac083127', now(), now(), false, 'ONLINE',
+'driver09pw', 'driver09', 3);
+
+insert into driver (id, coordinate, date_coordinate_updated, date_created, deleted, online_status, password, username, car_id)
+values
+ (10,
+ 'aced0005737200226f72672e737072696e676672616d65776f726b2e646174612e67656f2e506f696e7431b9e90ef11a4006020002440001784400017978704023000000000000404bfa1cac083127', now(), now(), false, 'ONLINE',
+'driver10pw', 'driver10', 2);
