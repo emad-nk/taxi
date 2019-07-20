@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freenow.domainvalue.GeoCoordinate;
+import io.swagger.annotations.ApiModelProperty;
+
 import javax.validation.constraints.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -12,9 +14,11 @@ public class DriverDTO
     @JsonIgnore
     private Long id;
 
+    @ApiModelProperty(example = "username", required = true)
     @NotNull(message = "Username can not be null!")
     private String username;
 
+    @ApiModelProperty(example = "password", required = true)
     @NotNull(message = "Password can not be null!")
     private String password;
 

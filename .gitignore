@@ -1,3 +1,9 @@
 /target
 /.idea
 *.iml
+*.iws
+*.ipr
+/out/
+build/
+bin/
+META-INF/

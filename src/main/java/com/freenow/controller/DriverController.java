@@ -9,6 +9,8 @@ import com.freenow.exception.EntityNotFoundException;
 import com.freenow.service.driver.DriverService;
 import java.util.List;
 import javax.validation.Valid;
+
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -40,7 +42,7 @@ public class DriverController
         this.driverService = driverService;
     }
 
-
+    @ApiOperation("Get driver by ID")
     @GetMapping("/{driverId}")
     public DriverDTO getDriver(@PathVariable long driverId) throws EntityNotFoundException
     {
@@ -48,6 +50,7 @@ public class DriverController
     }
 
 
+    @ApiOperation("Create driver")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public DriverDTO createDriver(@Valid @RequestBody DriverDTO driverDTO) throws ConstraintsViolationException
@@ -57,6 +60,7 @@ public class DriverController
     }
 
 
+    @ApiOperation("Delete driver by ID")
     @DeleteMapping("/{driverId}")
     public void deleteDriver(@PathVariable long driverId) throws EntityNotFoundException
     {
@@ -64,6 +68,7 @@ public class DriverController
     }
 
 
+    @ApiOperation("Update driver location by ID")
     @PutMapping("/{driverId}")
     public void updateLocation(
         @PathVariable long driverId, @RequestParam double longitude, @RequestParam double latitude)

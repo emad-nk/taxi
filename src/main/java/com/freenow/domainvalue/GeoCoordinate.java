@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Preconditions;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.data.geo.Point;
 
 @Embeddable
@@ -39,7 +41,7 @@ public class GeoCoordinate
         this.point = new Point(longitude, latitude);
     }
 
-
+    @ApiModelProperty(example = "12", required = true)
     @JsonProperty
     public double getLatitude()
     {
@@ -54,6 +56,7 @@ public class GeoCoordinate
     }
 
 
+    @ApiModelProperty(example = "14", required = true)
     @JsonProperty
     public double getLongitude()
     {
