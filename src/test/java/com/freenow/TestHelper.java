@@ -5,13 +5,24 @@ import com.freenow.datatransferobject.DriverDTO;
 import com.freenow.domainobject.CarDO;
 import com.freenow.domainobject.DriverDO;
 import com.freenow.domainvalue.*;
+import org.assertj.core.api.Assertions;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpStatus;
+import org.springframework.test.web.servlet.MvcResult;
 
 import java.time.ZonedDateTime;
 
 @RunWith(MockitoJUnitRunner.class)
-public abstract class TestData {
+public abstract class TestHelper {
+
+    public final void assertHttpStatus(MvcResult result, HttpStatus expected) {
+        Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(expected.value());
+    }
+
+    public final void assertExceptionThrown(Class<? extends Exception> clazz, Runnable block) {
+        Assertions.assertThatExceptionOfType(clazz).isThrownBy(block::run);
+    }
 
     public CarDO getCar() {
         CarDO car = new CarDO();
@@ -26,7 +37,6 @@ public abstract class TestData {
         return car;
     }
 
-
     public CarDTO getCarDTO() {
         return CarDTO.newBuilder()
                 .setConvertible(true)
@@ -37,7 +47,6 @@ public abstract class TestData {
                 .setRating(Rating.FOUR)
                 .createCarDTO();
     }
-
 
     public DriverDO getDriver() {
         DriverDO driver = new DriverDO("user1", "pass1");
@@ -50,7 +59,6 @@ public abstract class TestData {
         driver.setCoordinate(geoCoordinate);
         return driver;
     }
-
 
     public DriverDTO getDriverDTO() {
         GeoCoordinate geoCoordinate = new GeoCoordinate(80, 40);

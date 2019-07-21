@@ -1,7 +1,7 @@
 package com.freenow.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.freenow.TestData;
+import com.freenow.TestHelper;
 import com.freenow.datatransferobject.CarDTO;
 import com.freenow.domainobject.CarDO;
 import com.freenow.domainvalue.Manufacturer;
@@ -30,7 +30,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
-public class CarControllerTest extends TestData {
+public class CarControllerTest extends TestHelper {
 
     private static final ObjectMapper mapper = new ObjectMapper();
     private static final String BASE_URI = "/v1/cars";
@@ -76,9 +76,8 @@ public class CarControllerTest extends TestData {
                 .perform(get(BASE_URI)
                         .param(MANUFACTURER, Manufacturer.MERCEDES.toString()))
                 .andReturn();
-        Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
-        final String responseBody = result.getResponse().getContentAsString();
-        Assertions.assertThat(responseBody).contains("GMB12");
+        assertHttpStatus(result, HttpStatus.OK);
+        Assertions.assertThat(result.getResponse().getContentAsString()).contains("GMB12");
     }
 
     @Test
@@ -93,9 +92,8 @@ public class CarControllerTest extends TestData {
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .content(jsonInString))
                 .andReturn();
-        Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.CREATED.value());
-        final String responseBody = result.getResponse().getContentAsString();
-        Assertions.assertThat(responseBody).contains("FOUR");
+        assertHttpStatus(result, HttpStatus.CREATED);
+        Assertions.assertThat(result.getResponse().getContentAsString()).contains("FOUR");
     }
 
     @Test
@@ -110,7 +108,7 @@ public class CarControllerTest extends TestData {
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .content(jsonInString))
                 .andReturn();
-        Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertHttpStatus(result, HttpStatus.NO_CONTENT);
     }
 
     @Test
@@ -120,14 +118,13 @@ public class CarControllerTest extends TestData {
         MvcResult result = mvc
                 .perform(delete(BASE_URI + "/{carId}", 1L))
                 .andReturn();
-        Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertHttpStatus(result, HttpStatus.NO_CONTENT);
     }
 
     @Test
     public void getCarWithNonExistingIdShouldThrowException() throws Exception {
         when(carService.find(anyLong())).thenThrow(new EntityNotFoundException("Entity not found"));
-        Assertions.assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() ->
-                carController.getCar(1L));
+        assertExceptionThrown(EntityNotFoundException.class, () -> carController.getCar(1L));
         mvc.perform(get(BASE_URI + "/{carId}", 1L))
                 .andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn();
     }
@@ -144,8 +141,7 @@ public class CarControllerTest extends TestData {
     @Test
     public void updateRatingForNonExistingCarShouldThrowException() throws Exception {
         doThrow(new EntityNotFoundException("Entity not found")).when(carService).updateRating(anyLong(), any());
-        Assertions.assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() ->
-                carController.updateRating(1L, Rating.FIVE));
+        assertExceptionThrown(EntityNotFoundException.class, () -> carController.updateRating(1L, Rating.FIVE));
         mvc.perform(put(BASE_URI + "/{carId}", 1L)
                 .param(RATING, Rating.FIVE.toString()))
                 .andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn();
@@ -156,8 +152,7 @@ public class CarControllerTest extends TestData {
         CarDTO carDTO = getCarDTO();
         String jsonInString = mapper.writeValueAsString(carDTO);
         when(carService.create(any())).thenThrow(new ConstraintsViolationException("Failed"));
-        Assertions.assertThatExceptionOfType(ConstraintsViolationException.class).isThrownBy(() ->
-                carController.createCar(getCarDTO()));
+        assertExceptionThrown(ConstraintsViolationException.class, () -> carController.createCar(getCarDTO()));
         mvc.perform(post(BASE_URI)
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .content(jsonInString))

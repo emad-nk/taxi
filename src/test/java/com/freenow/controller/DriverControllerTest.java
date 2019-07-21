@@ -1,7 +1,7 @@
 package com.freenow.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.freenow.TestData;
+import com.freenow.TestHelper;
 import com.freenow.datatransferobject.DriverDTO;
 import com.freenow.domainobject.DriverDO;
 import com.freenow.domainvalue.OnlineStatus;
@@ -31,7 +31,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
-public class DriverControllerTest extends TestData {
+public class DriverControllerTest extends TestHelper {
 
     private static final ObjectMapper mapper = new ObjectMapper();
     private static final String BASE_URI = "/v1/drivers";
@@ -66,7 +66,7 @@ public class DriverControllerTest extends TestData {
         MvcResult result = mvc
                 .perform(get(BASE_URI + "/{driverId}", 1))
                 .andReturn();
-        Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertHttpStatus(result, HttpStatus.OK);
         final String responseBody = result.getResponse().getContentAsString();
         Assertions.assertThat(responseBody).contains("user1");
     }
@@ -79,7 +79,7 @@ public class DriverControllerTest extends TestData {
                 .perform(put(BASE_URI + "/{driverId}", 1)
                         .param(LONGITUDE, "33").param(LATITUDE, "33"))
                 .andReturn();
-        Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertHttpStatus(result, HttpStatus.NO_CONTENT);
     }
 
     @Test
@@ -93,7 +93,7 @@ public class DriverControllerTest extends TestData {
                 .perform(post(BASE_URI)
                         .contentType(MediaType.APPLICATION_JSON_UTF8).content(jsonInString))
                 .andReturn();
-        Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.CREATED.value());
+        assertHttpStatus(result, HttpStatus.CREATED);
         final String responseBody = result.getResponse().getContentAsString();
         Assertions.assertThat(responseBody).contains("user1");
     }
@@ -105,7 +105,7 @@ public class DriverControllerTest extends TestData {
         MvcResult result = mvc
                 .perform(delete(BASE_URI + "/{driverId}", 1))
                 .andReturn();
-        Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertHttpStatus(result, HttpStatus.NO_CONTENT);
     }
 
     @Test
@@ -117,7 +117,7 @@ public class DriverControllerTest extends TestData {
                 .perform(get(BASE_URI)
                         .param("onlineStatus", OnlineStatus.ONLINE.toString()))
                 .andReturn();
-        Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertHttpStatus(result, HttpStatus.OK);
         final String responseBody = result.getResponse().getContentAsString();
         Assertions.assertThat(responseBody).contains("user1");
     }
@@ -131,7 +131,7 @@ public class DriverControllerTest extends TestData {
                         .param(DRIVER_ID, "1")
                         .param(CAR_ID, "1"))
                 .andReturn();
-        Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertHttpStatus(result, HttpStatus.NO_CONTENT);
     }
 
     @Test
@@ -142,14 +142,13 @@ public class DriverControllerTest extends TestData {
                 .perform(put(BASE_URI + "/deselect")
                         .param(DRIVER_ID, "1"))
                 .andReturn();
-        Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertHttpStatus(result, HttpStatus.NO_CONTENT);
     }
 
     @Test
     public void getDriverWithNonExistingIdShouldThrowException() throws Exception {
         when(driverService.find(anyLong())).thenThrow(new EntityNotFoundException("Entity not found"));
-        Assertions.assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() ->
-                driverController.getDriver(1L));
+        assertExceptionThrown(EntityNotFoundException.class, () -> driverController.getDriver(1L));
         mvc.perform(get(BASE_URI + "/{driverId}", 1L))
                 .andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn();
     }
@@ -157,8 +156,7 @@ public class DriverControllerTest extends TestData {
     @Test
     public void deleteNonExistingDriverShouldThrowException() throws Exception {
         doThrow(new EntityNotFoundException("Entity not found")).when(driverService).delete(anyLong());
-        Assertions.assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() ->
-                driverController.deleteDriver(1L));
+        assertExceptionThrown(EntityNotFoundException.class, () -> driverController.deleteDriver(1L));
         mvc.perform(delete(BASE_URI + "/{driverId}", 1L))
                 .andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn();
     }
@@ -167,8 +165,7 @@ public class DriverControllerTest extends TestData {
     public void updateLocationForNonExistingDriverShouldThrowException() throws Exception {
         doThrow(new EntityNotFoundException("Entity not found"))
                 .when(driverService).updateLocation(anyLong(), anyDouble(), anyDouble());
-        Assertions.assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() ->
-                driverController.updateLocation(1L, 2, 2));
+        assertExceptionThrown(EntityNotFoundException.class, () -> driverController.updateLocation(1L, 2, 2));
         mvc.perform(put(BASE_URI + "/{driverId}", 1L)
                 .param(LONGITUDE, "2")
                 .param(LATITUDE, "2"))
@@ -180,8 +177,7 @@ public class DriverControllerTest extends TestData {
         DriverDTO driverDTO = getDriverDTO();
         String jsonInString = mapper.writeValueAsString(driverDTO);
         when(driverService.create(any())).thenThrow(new ConstraintsViolationException("Failed"));
-        Assertions.assertThatExceptionOfType(ConstraintsViolationException.class).isThrownBy(() ->
-                driverController.createDriver(getDriverDTO()));
+        assertExceptionThrown(ConstraintsViolationException.class, () -> driverController.createDriver(getDriverDTO()));
         mvc.perform(post(BASE_URI)
                 .contentType(MediaType.APPLICATION_JSON_UTF8).content(jsonInString))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
@@ -190,14 +186,12 @@ public class DriverControllerTest extends TestData {
     @Test
     public void selectACarInUseShouldThrowCarAlreadyInUseException() throws Exception {
         doThrow(CarAlreadyInUseException.class).when(driverService).selectCarByDriver(anyLong(), anyLong());
-        Assertions.assertThatExceptionOfType(CarAlreadyInUseException.class).isThrownBy(() ->
-                driverController.selectCarByDriver(1L, 1L));
-         mvc.perform(put(BASE_URI + "/select")
-                        .param(DRIVER_ID, "1")
-                        .param(CAR_ID, "1"))
+        assertExceptionThrown(CarAlreadyInUseException.class, () -> driverController.selectCarByDriver(1L, 1L));
+        mvc.perform(put(BASE_URI + "/select")
+                .param(DRIVER_ID, "1")
+                .param(CAR_ID, "1"))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
     }
-
 
     @Test
     public void testFindDriverByCarAttributes() throws Exception {

@@ -1,11 +1,15 @@
 package com.freenow.repository;
 
+import com.freenow.FreeNowServerApplicantTestApplication;
 import com.freenow.dataaccessobject.CarRepository;
 import com.freenow.domainobject.CarDO;
 import com.google.common.collect.Lists;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,7 +17,9 @@ import java.util.Optional;
 /**
  * This test class is based on the data inserted in the DB by data.sql file under resources
  */
-public class CarRepositoryTest extends RepositoryTestData {
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest(classes = FreeNowServerApplicantTestApplication.class)
+public class CarRepositoryTest {
 
     @Autowired
     private CarRepository carRepository;

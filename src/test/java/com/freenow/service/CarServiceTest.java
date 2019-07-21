@@ -1,28 +1,26 @@
 package com.freenow.service;
 
-import com.freenow.TestData;
+import com.freenow.TestHelper;
 import com.freenow.dataaccessobject.CarRepository;
 import com.freenow.domainobject.CarDO;
 import com.freenow.domainvalue.Manufacturer;
 import com.freenow.domainvalue.Rating;
-import com.freenow.exception.CarAlreadyInUseException;
 import com.freenow.exception.EntityNotFoundException;
 import com.freenow.service.car.DefaultCarService;
-import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class CarServiceTest extends TestData {
+public class CarServiceTest extends TestHelper {
 
     @Mock
     private CarRepository carRepository;
@@ -46,7 +44,7 @@ public class CarServiceTest extends TestData {
 
     @Test
     public void verifyFindByManufacturerIsCalledForFindByManufacturer() {
-        List<CarDO> cars = Arrays.asList(getCar());
+        List<CarDO> cars = Collections.singletonList(getCar());
         when(carRepository.findByManufacturer(Manufacturer.MERCEDES)).thenReturn(cars);
         carService.findByManufacturer(Manufacturer.MERCEDES);
         verify(carRepository, times(1)).findByManufacturer(Manufacturer.MERCEDES);
@@ -61,7 +59,7 @@ public class CarServiceTest extends TestData {
     }
 
     @Test
-    public void verifyFindByIdIsCalledForUpdate() throws Exception {
+    public void verifyFindByIdIsCalledForUpdate() {
         CarDO carDO = getCar();
         when(carRepository.findById(any(Long.class))).thenReturn(Optional.of(carDO));
         carService.updateRating(any(Long.class), Rating.FIVE);
@@ -79,8 +77,7 @@ public class CarServiceTest extends TestData {
     @Test
     public void findThrowExceptionWhenIdDoesNotExist() {
         when(carRepository.findById(any(Long.class))).thenReturn(Optional.empty());
-        Assertions.assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() ->
-                carService.find(1L));
+        assertExceptionThrown(EntityNotFoundException.class, () -> carService.find(1L));
     }
 
 }
