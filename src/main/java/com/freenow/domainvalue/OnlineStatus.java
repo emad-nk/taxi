@@ -1,6 +1,5 @@
 package com.freenow.domainvalue;
 
-public enum OnlineStatus
-{
+public enum OnlineStatus {
     ONLINE, OFFLINE
 }

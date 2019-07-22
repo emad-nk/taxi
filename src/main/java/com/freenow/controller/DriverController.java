@@ -82,7 +82,6 @@ public class DriverController {
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     public List<DriverDTO> searchDrivers(@RequestParam Map<String, String> queryParam) {
-        System.out.println(queryParam);
         return DriverMapper.makeDriverDTOList(driverService.searchDrivers(queryParam));
     }
 
