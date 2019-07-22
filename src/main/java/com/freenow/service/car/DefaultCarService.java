@@ -2,7 +2,6 @@ package com.freenow.service.car;
 
 import com.freenow.dataaccessobject.CarRepository;
 import com.freenow.domainobject.CarDO;
-import com.freenow.domainvalue.Manufacturer;
 import com.freenow.domainvalue.Rating;
 import com.freenow.exception.ConstraintsViolationException;
 import com.freenow.exception.EntityNotFoundException;
@@ -11,9 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class DefaultCarService implements CarService {
@@ -33,11 +29,8 @@ public class DefaultCarService implements CarService {
      */
     @Override
     public CarDO find(Long carId) {
-        Optional<CarDO> carDo = carRepository.findById(carId);
-        if (!carDo.isPresent()) {
-            throw new EntityNotFoundException("Could not find entity with licensePlate: " + carId);
-        }
-        return carDo.get();
+        return carRepository.findById(carId).orElseThrow(() ->
+                new EntityNotFoundException("Could not find entity with licensePlate: " + carId));
     }
 
     /**
@@ -49,14 +42,12 @@ public class DefaultCarService implements CarService {
      */
     @Override
     public CarDO create(CarDO carDO) {
-        CarDO carDo;
         try {
-            carDo = carRepository.save(carDO);
+            return carRepository.save(carDO);
         } catch (DataIntegrityViolationException e) {
-            LOGGER.info("Some constraints are thrown due to car creation", e);
+            LOGGER.warn("Some constraints are thrown due to car creation", e);
             throw new ConstraintsViolationException(e.getMessage());
         }
-        return carDo;
     }
 
 
@@ -68,8 +59,7 @@ public class DefaultCarService implements CarService {
     @Override
     @Transactional
     public void delete(Long carId) {
-        CarDO carDO = find(carId);
-        carDO.setDeleted(true);
+        find(carId).setDeleted(true);
     }
 
     /**
@@ -80,13 +70,10 @@ public class DefaultCarService implements CarService {
      */
     @Override
     @Transactional
-    public void updateRating(Long carId, Rating rating) {
+    public CarDO updateRating(Long carId, Rating rating) {
         CarDO carDO = find(carId);
         carDO.setRating(rating);
+        return carDO;
     }
 
-    @Override
-    public List<CarDO> findByManufacturer(Manufacturer manufacturer) {
-        return carRepository.findByManufacturer(manufacturer);
-    }
 }

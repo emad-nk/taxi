@@ -25,15 +25,22 @@ public class CarRepositoryTest {
     private CarRepository carRepository;
 
     @Test
-    public void getDriverById() {
+    public void getCarById() {
         Optional<CarDO> car = carRepository.findById(2L);
         Assertions.assertThat(car.isPresent()).isTrue();
+        Assertions.assertThat(car.get().getId()).isEqualTo(2);
     }
 
     @Test
     public void getAllCars() {
         List<CarDO> cars = Lists.newArrayList(carRepository.findAll());
         Assertions.assertThat(cars).hasSize(4);
+    }
+
+    @Test
+    public void getCarByIDDoesNotExist(){
+        Optional<CarDO> car = carRepository.findById(222L);
+        Assertions.assertThat(car.isPresent()).isFalse();
     }
 
 }

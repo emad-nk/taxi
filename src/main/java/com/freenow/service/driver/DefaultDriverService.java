@@ -9,6 +9,7 @@ import com.freenow.domainvalue.OnlineStatus;
 import com.freenow.exception.CarAlreadyInUseException;
 import com.freenow.exception.ConstraintsViolationException;
 import com.freenow.exception.EntityNotFoundException;
+import com.freenow.query.SearchCriteria;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Service to encapsulate the link between DAO and controller and to have business logic for some driver specific things.
@@ -56,14 +58,12 @@ public class DefaultDriverService implements DriverService {
      */
     @Override
     public DriverDO create(DriverDO driverDO) {
-        DriverDO driver;
         try {
-            driver = driverRepository.save(driverDO);
+            return driverRepository.save(driverDO);
         } catch (DataIntegrityViolationException e) {
             LOGGER.warn("ConstraintsViolationException while creating a driver: {}", driverDO, e);
             throw new ConstraintsViolationException(e.getMessage());
         }
-        return driver;
     }
 
 
@@ -76,8 +76,7 @@ public class DefaultDriverService implements DriverService {
     @Override
     @Transactional
     public void delete(Long driverId) {
-        DriverDO driverDO = findDriverChecked(driverId);
-        driverDO.setDeleted(true);
+        findDriverChecked(driverId).setDeleted(true);
     }
 
 
@@ -91,20 +90,10 @@ public class DefaultDriverService implements DriverService {
      */
     @Override
     @Transactional
-    public void updateLocation(long driverId, double longitude, double latitude) {
+    public DriverDO updateLocation(long driverId, double longitude, double latitude) {
         DriverDO driverDO = findDriverChecked(driverId);
         driverDO.setCoordinate(new GeoCoordinate(latitude, longitude));
-    }
-
-
-    /**
-     * Finds all drivers by online state.
-     *
-     * @param onlineStatus type of Enum OFFLINE/ONLINE
-     */
-    @Override
-    public List<DriverDO> find(OnlineStatus onlineStatus) {
-        return driverRepository.findByOnlineStatus(onlineStatus);
+        return driverDO;
     }
 
 
@@ -121,7 +110,7 @@ public class DefaultDriverService implements DriverService {
      */
     @Override
     @Transactional
-    public void selectCarByDriver(long driverId, long carId) {
+    public DriverDO selectCarByDriver(long driverId, long carId) {
         DriverDO driverDO = findDriverChecked(driverId);
         CarDO carDO = findCarChecked(carId);
 
@@ -139,6 +128,7 @@ public class DefaultDriverService implements DriverService {
         carDO.setCarSelectedByDriver(true);
         driverDO.setCarDO(carDO);
         LOGGER.info("car id {} is selected by driver id {}.", carDO.getId(), driverDO.getId());
+        return driverDO;
     }
 
 
@@ -151,7 +141,7 @@ public class DefaultDriverService implements DriverService {
      */
     @Override
     @Transactional
-    public void deSelectCarByDriver(long driverId) {
+    public DriverDO deSelectCarByDriver(long driverId) {
         DriverDO driverDO = findDriverChecked(driverId);
         CarDO carDO = driverDO.getCarDO();
         if (carDO == null) {
@@ -160,6 +150,18 @@ public class DefaultDriverService implements DriverService {
         }
         carDO.setCarSelectedByDriver(false);
         driverDO.setCarDO(null);
+        return driverDO;
+    }
+
+    /**
+     * Search drivers by criteria
+     *
+     * @param queryParams map of values containing the client search
+     * @return list of drivers
+     */
+    @Override
+    public List<DriverDO> searchDrivers(Map<String, String> queryParams) {
+        return driverRepository.findAll(SearchCriteria.getDriversBySpecification(queryParams));
     }
 
     private DriverDO findDriverChecked(Long driverId) {

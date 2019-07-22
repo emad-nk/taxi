@@ -15,9 +15,9 @@ public class ExceptionControllerAdvice {
 
     @ResponseBody
     @ExceptionHandler(InvalidFormatException.class)
-    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-    public ResponseEntity<Object> timeStampFutureException(InvalidFormatException ex) {
-        return buildResponseEntity(new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, "Malformed JSON", ex));
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Object> jsonParseException(InvalidFormatException ex) {
+        return buildResponseEntity(new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, "Malformed JSON"));
     }
 
     private ResponseEntity<Object> buildResponseEntity(ApiError apiError) {
@@ -30,14 +30,12 @@ public class ExceptionControllerAdvice {
         public final int status;
         public final HttpStatus error;
         public final String message;
-        public final String debugMessage;
 
-        ApiError(HttpStatus status, String message, Throwable ex) {
+        ApiError(HttpStatus status, String message) {
             this.timestamp = ZonedDateTime.now();
             this.status = status.value();
             this.error = status;
             this.message = message;
-            this.debugMessage = ex.getLocalizedMessage();
         }
 
     }

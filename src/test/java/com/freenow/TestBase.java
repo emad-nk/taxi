@@ -1,5 +1,6 @@
 package com.freenow;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freenow.datatransferobject.CarDTO;
 import com.freenow.datatransferobject.DriverDTO;
 import com.freenow.domainobject.CarDO;
@@ -11,10 +12,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.io.IOException;
 import java.time.ZonedDateTime;
 
 @RunWith(MockitoJUnitRunner.class)
-public abstract class TestHelper {
+public abstract class TestBase {
 
     public final void assertHttpStatus(MvcResult result, HttpStatus expected) {
         Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(expected.value());
@@ -24,11 +26,16 @@ public abstract class TestHelper {
         Assertions.assertThatExceptionOfType(clazz).isThrownBy(block::run);
     }
 
-    public CarDO getCar() {
+    public final  <T> T getMappedObjectDTO(MvcResult result, Class<T> clazz) throws IOException {
+        final ObjectMapper mapper = new ObjectMapper();
+        return  mapper.readValue(result.getResponse().getContentAsString(), clazz);
+    }
+
+    public CarDO getCarDO() {
         CarDO car = new CarDO();
         car.setId(1L);
         car.setSeatCount((short) 5);
-        car.setRating(Rating.FOUR);
+        car.setRating(Rating.FIVE);
         car.setDateCarCreated(ZonedDateTime.now());
         car.setLicensePlate("GMB12");
         car.setEngineType(EngineType.DIESEL);
@@ -48,10 +55,10 @@ public abstract class TestHelper {
                 .createCarDTO();
     }
 
-    public DriverDO getDriver() {
+    public DriverDO getDriverDO() {
         DriverDO driver = new DriverDO("user1", "pass1");
         driver.setId(1L);
-        driver.setCarDO(getCar());
+        driver.setCarDO(getCarDO());
         driver.setDateCreated(ZonedDateTime.now());
         driver.setDeleted(false);
         driver.setOnlineStatus(OnlineStatus.ONLINE);

@@ -3,7 +3,6 @@ package com.freenow.controller;
 import com.freenow.controller.mapper.CarMapper;
 import com.freenow.datatransferobject.CarDTO;
 import com.freenow.domainobject.CarDO;
-import com.freenow.domainvalue.Manufacturer;
 import com.freenow.domainvalue.Rating;
 import com.freenow.service.car.CarService;
 import io.swagger.annotations.ApiOperation;
@@ -12,8 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
+/**
+ * All operations with a car will be routed by this controller.
+ * <p/>
+ */
 @RestController
 @RequestMapping("v1/cars")
 public class CarController {
@@ -53,16 +55,9 @@ public class CarController {
 
     @ApiOperation("Update car rating by ID")
     @PutMapping("/{carId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateRating(@Valid @PathVariable long carId, @RequestParam Rating rating) {
-        carService.updateRating(carId, rating);
-    }
-
-
-    @ApiOperation("Get list of cars by manufacturer")
-    @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<CarDTO> findCars(@RequestParam Manufacturer manufacturer) {
-        return CarMapper.makeCarDTOList(carService.findByManufacturer(manufacturer));
+    public CarDTO updateRating(@Valid @PathVariable long carId, @RequestParam Rating rating) {
+        return CarMapper.makeCarDTO(carService.updateRating(carId, rating));
     }
+
 }

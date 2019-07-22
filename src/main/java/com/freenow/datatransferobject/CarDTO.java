@@ -14,7 +14,6 @@ import javax.validation.constraints.NotNull;
 public class CarDTO {
 
     @JsonIgnore
-    @ApiModelProperty(hidden = true)
     private Long id;
 
     @ApiModelProperty(example = "LLBB 1111", required = true)
@@ -165,5 +164,19 @@ public class CarDTO {
             return new CarDTO(id, licensePlate, seatCount, convertible, engineType, rating, manufacturer, selectedByDriver);
         }
 
+    }
+
+    @Override
+    public String toString() {
+        return "CarDTO{" +
+                "id=" + id +
+                ", licensePlate='" + licensePlate + '\'' +
+                ", seatCount=" + seatCount +
+                ", convertible=" + convertible +
+                ", engineType=" + engineType +
+                ", rating=" + rating +
+                ", manufacturer=" + manufacturer +
+                ", selectedByDriver=" + selectedByDriver +
+                '}';
     }
 }

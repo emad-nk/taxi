@@ -1,6 +1,6 @@
 package com.freenow.service;
 
-import com.freenow.TestHelper;
+import com.freenow.TestBase;
 import com.freenow.dataaccessobject.CarRepository;
 import com.freenow.dataaccessobject.DriverRepository;
 import com.freenow.domainobject.CarDO;
@@ -16,14 +16,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class DriverServiceTest extends TestHelper {
+public class DriverServiceTest extends TestBase {
 
     @Mock
     private DriverRepository driverRepository;
@@ -42,71 +40,71 @@ public class DriverServiceTest extends TestHelper {
 
     @Test
     public void findShouldThrowExceptionWhenCannotFindDriverId() {
-        when(driverRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+        when(driverRepository.findById(1L)).thenReturn(Optional.empty());
         assertExceptionThrown(EntityNotFoundException.class, () -> driverService.find(1L));
     }
 
     @Test
     public void deleteShouldThrowExceptionWhenCannotFindDriverById() {
-        when(driverRepository.findById(any(Long.class))).thenReturn(Optional.empty());
-        assertExceptionThrown(EntityNotFoundException.class, () -> driverService.delete(1L));
+        when(driverRepository.findById(2L)).thenReturn(Optional.empty());
+        assertExceptionThrown(EntityNotFoundException.class, () -> driverService.delete(2L));
     }
 
     @Test
     public void updateLocationShouldThrowExceptionWhenCannotFindDriverById() {
-        when(driverRepository.findById(any(Long.class))).thenReturn(Optional.empty());
-        assertExceptionThrown(EntityNotFoundException.class, () -> driverService.updateLocation(1L, 12, 12));
+        when(driverRepository.findById(3L)).thenReturn(Optional.empty());
+        assertExceptionThrown(EntityNotFoundException.class, () -> driverService.updateLocation(3L, 12, 12));
     }
 
     @Test
     public void selectCarByDriverShouldThrowExceptionWhenDriverIsOffline() {
-        DriverDO driver = getDriver();
-        CarDO car = getCar();
+        DriverDO driver = getDriverDO();
+        CarDO car = getCarDO();
         driver.setOnlineStatus(OnlineStatus.OFFLINE);
-        when(driverRepository.findById(any(Long.class))).thenReturn(Optional.of(driver));
-        when(carRepository.findById(any(Long.class))).thenReturn(Optional.of(car));
-        assertExceptionThrown(ConstraintsViolationException.class, () -> driverService.selectCarByDriver(1L, 1L));
+        when(driverRepository.findById(4L)).thenReturn(Optional.of(driver));
+        when(carRepository.findById(5L)).thenReturn(Optional.of(car));
+        assertExceptionThrown(ConstraintsViolationException.class, () -> driverService.selectCarByDriver(4L, 5L));
     }
 
     @Test
     public void selectCarByDriverShouldThrowExceptionWhenCarIsAlreadyInUse() {
-        DriverDO driver = getDriver();
-        CarDO car = getCar();
+        DriverDO driver = getDriverDO();
+        CarDO car = getCarDO();
         car.setCarSelectedByDriver(true);
-        when(driverRepository.findById(any(Long.class))).thenReturn(Optional.of(driver));
-        when(carRepository.findById(any(Long.class))).thenReturn(Optional.of(car));
-        assertExceptionThrown(CarAlreadyInUseException.class, () -> driverService.selectCarByDriver(1L, 1L));
+        when(driverRepository.findById(6L)).thenReturn(Optional.of(driver));
+        when(carRepository.findById(7L)).thenReturn(Optional.of(car));
+        assertExceptionThrown(CarAlreadyInUseException.class, () -> driverService.selectCarByDriver(6L, 7L));
     }
 
     @Test
     public void selectCarByDriverShouldThrowExceptionWhenDriverAlreadyHasACar() {
-        DriverDO driver = getDriver();
-        CarDO car = getCar();
-        when(driverRepository.findById(any(Long.class))).thenReturn(Optional.of(driver));
-        when(carRepository.findById(any(Long.class))).thenReturn(Optional.of(car));
-        assertExceptionThrown(ConstraintsViolationException.class, () -> driverService.selectCarByDriver(1L, 1L));
+        DriverDO driver = getDriverDO();
+        CarDO car = getCarDO();
+        when(driverRepository.findById(8L)).thenReturn(Optional.of(driver));
+        when(carRepository.findById(9L)).thenReturn(Optional.of(car));
+        assertExceptionThrown(ConstraintsViolationException.class, () -> driverService.selectCarByDriver(8L, 9L));
     }
 
     @Test
     public void deselectingACarByDriverShouldThrowExceptionWhenDriverHasNoCar() {
-        DriverDO driver = getDriver();
+        DriverDO driver = getDriverDO();
         driver.setCarDO(null);
-        when(driverRepository.findById(any(Long.class))).thenReturn(Optional.of(driver));
-        assertExceptionThrown(ConstraintsViolationException.class, () -> driverService.deSelectCarByDriver(1L));
+        when(driverRepository.findById(10L)).thenReturn(Optional.of(driver));
+        assertExceptionThrown(ConstraintsViolationException.class, () -> driverService.deSelectCarByDriver(10L));
     }
 
     @Test
     public void verifyFindByIdIsCalledForFind() {
-        DriverDO driver = getDriver();
-        when(driverRepository.findById(any(Long.class))).thenReturn(Optional.of(driver));
-        driverService.find(any(Long.class));
-        verify(driverRepository, times(1)).findById(any(Long.class));
+        DriverDO driver = getDriverDO();
+        when(driverRepository.findById(11L)).thenReturn(Optional.of(driver));
+        driverService.find(11L);
+        verify(driverRepository, times(1)).findById(11L);
     }
 
 
     @Test
     public void verifySaveIsCalledForCreate() {
-        DriverDO driverDO = getDriver();
+        DriverDO driverDO = getDriverDO();
         when(driverRepository.save(any(DriverDO.class))).thenReturn(driverDO);
         driverService.create(driverDO);
         verify(driverRepository, times(1)).save(driverDO);
@@ -115,28 +113,19 @@ public class DriverServiceTest extends TestHelper {
 
     @Test
     public void verifyFindByIdIsCalledForDelete() {
-        DriverDO driverDO = getDriver();
-        when(driverRepository.findById(any(Long.class))).thenReturn(Optional.of(driverDO));
-        driverService.delete(any(Long.class));
-        verify(driverRepository, times(1)).findById(any(Long.class));
+        DriverDO driverDO = getDriverDO();
+        when(driverRepository.findById(12L)).thenReturn(Optional.of(driverDO));
+        driverService.delete(12L);
+        verify(driverRepository, times(1)).findById(12L);
     }
 
 
     @Test
     public void verifyFindByIdIsCalledForUpdateLocation() {
-        DriverDO driverDO = getDriver();
-        when(driverRepository.findById(any(Long.class))).thenReturn(Optional.of(driverDO));
-        driverService.updateLocation(1L, 90.0, 90.0);
-        verify(driverRepository, times(1)).findById(any(Long.class));
-    }
-
-
-    @Test
-    public void verifyFindByOnlineStatusIsCalledForFindByOnlineStatus() {
-        List<DriverDO> drivers = Collections.singletonList(getDriver());
-        when(driverRepository.findByOnlineStatus(any(OnlineStatus.class))).thenReturn(drivers);
-        driverService.find(OnlineStatus.ONLINE);
-        verify(driverRepository, times(1)).findByOnlineStatus(any(OnlineStatus.class));
+        DriverDO driverDO = getDriverDO();
+        when(driverRepository.findById(13L)).thenReturn(Optional.of(driverDO));
+        driverService.updateLocation(13L, 90.0, 90.0);
+        verify(driverRepository, times(1)).findById(13L);
     }
 
 }

@@ -3,7 +3,7 @@ package com.freenow.repository;
 import com.freenow.FreeNowServerApplicantTestApplication;
 import com.freenow.dataaccessobject.DriverRepository;
 import com.freenow.domainobject.DriverDO;
-import com.freenow.domainvalue.OnlineStatus;
+import com.google.common.collect.Lists;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,18 +29,19 @@ public class DriverRepositoryTest {
     public void getDriverById() {
         Optional<DriverDO> driverDO = driverRepository.findById(4L);
         Assertions.assertThat(driverDO.isPresent()).isTrue();
+        Assertions.assertThat(driverDO.get().getId()).isEqualTo(4);
     }
 
     @Test
-    public void testDriverByOnlineStatus() {
-        List<DriverDO> onlineDrivers = driverRepository.findByOnlineStatus(OnlineStatus.ONLINE);
-        Assertions.assertThat(onlineDrivers).hasSize(6);
+    public void getDriverDoesNotExistById(){
+        Optional<DriverDO> driverDO = driverRepository.findById(222L);
+        Assertions.assertThat(driverDO.isPresent()).isFalse();
     }
 
     @Test
-    public void testDriverByOfflineStatus() {
-        List<DriverDO> offlineDrivers = driverRepository.findByOnlineStatus(OnlineStatus.OFFLINE);
-        Assertions.assertThat(offlineDrivers).hasSize(4);
+    public void getAllDrivers(){
+        List<DriverDO> drivers = Lists.newArrayList(driverRepository.findAll());
+        Assertions.assertThat(drivers.size()).isEqualTo(10);
     }
 
     @Test

@@ -4,6 +4,7 @@ import com.freenow.domainobject.DriverDO;
 import com.freenow.domainvalue.OnlineStatus;
 
 import java.util.List;
+import java.util.Map;
 
 public interface DriverService {
 
@@ -11,14 +12,14 @@ public interface DriverService {
 
     DriverDO create(DriverDO driverDO);
 
-    List<DriverDO> find(OnlineStatus onlineStatus);
-
     void delete(Long driverId);
 
-    void updateLocation(long driverId, double longitude, double latitude);
+    DriverDO updateLocation(long driverId, double longitude, double latitude);
 
-    void selectCarByDriver(long driverId, long carId);
+    DriverDO selectCarByDriver(long driverId, long carId);
 
-    void deSelectCarByDriver(long driverId);
+    DriverDO deSelectCarByDriver(long driverId);
+
+    List<DriverDO> searchDrivers(Map<String, String > queryParams);
 
 }

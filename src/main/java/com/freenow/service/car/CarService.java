@@ -1,10 +1,7 @@
 package com.freenow.service.car;
 
 import com.freenow.domainobject.CarDO;
-import com.freenow.domainvalue.Manufacturer;
 import com.freenow.domainvalue.Rating;
-
-import java.util.List;
 
 public interface CarService {
     CarDO find(Long carId);
@@ -13,7 +10,6 @@ public interface CarService {
 
     void delete(Long carId);
 
-    void updateRating(Long carId, Rating rating);
+    CarDO updateRating(Long carId, Rating rating);
 
-    List<CarDO> findByManufacturer(Manufacturer manufacturer);
 }

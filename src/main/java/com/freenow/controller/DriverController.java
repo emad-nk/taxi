@@ -3,7 +3,6 @@ package com.freenow.controller;
 import com.freenow.controller.mapper.DriverMapper;
 import com.freenow.datatransferobject.DriverDTO;
 import com.freenow.domainobject.DriverDO;
-import com.freenow.domainvalue.OnlineStatus;
 import com.freenow.service.driver.DriverService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 /**
  * All operations with a driver will be routed by this controller.
@@ -31,6 +31,7 @@ public class DriverController {
 
     @ApiOperation("Get driver by ID")
     @GetMapping("/{driverId}")
+    @ResponseStatus(HttpStatus.OK)
     public DriverDTO getDriver(@PathVariable long driverId) {
         return DriverMapper.makeDriverDTO(driverService.find(driverId));
     }
@@ -55,32 +56,34 @@ public class DriverController {
 
     @ApiOperation("Update driver location by ID")
     @PutMapping("/{driverId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateLocation(
+    @ResponseStatus(HttpStatus.OK)
+    public DriverDTO updateLocation(
             @PathVariable long driverId, @RequestParam double longitude, @RequestParam double latitude) {
-        driverService.updateLocation(driverId, longitude, latitude);
-    }
-
-
-    @ApiOperation("Find drivers by their online status")
-    @GetMapping
-    public List<DriverDTO> findDrivers(@RequestParam OnlineStatus onlineStatus) {
-        return DriverMapper.makeDriverDTOList(driverService.find(onlineStatus));
+        return DriverMapper.makeDriverDTO(driverService.updateLocation(driverId, longitude, latitude));
     }
 
 
     @ApiOperation("Select a car for a driver")
     @PutMapping("/select")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void selectCarByDriver(@RequestParam long driverId, @RequestParam long carId) {
-        driverService.selectCarByDriver(driverId, carId);
+    @ResponseStatus(HttpStatus.OK)
+    public DriverDTO selectCarByDriver(@RequestParam long driverId, @RequestParam long carId) {
+        return DriverMapper.makeDriverDTO(driverService.selectCarByDriver(driverId, carId));
     }
 
 
     @ApiOperation("Deselect car for a driver")
     @PutMapping("/deselect")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deSelectCarByDriver(@RequestParam long driverId) {
-        driverService.deSelectCarByDriver(driverId);
+    @ResponseStatus(HttpStatus.OK)
+    public DriverDTO deSelectCarByDriver(@RequestParam long driverId) {
+        return DriverMapper.makeDriverDTO(driverService.deSelectCarByDriver(driverId));
     }
+
+    @ApiOperation("Search drivers by their attributes or their car characteristics")
+    @GetMapping("/search")
+    @ResponseStatus(HttpStatus.OK)
+    public List<DriverDTO> searchDrivers(@RequestParam Map<String, String> queryParam) {
+        System.out.println(queryParam);
+        return DriverMapper.makeDriverDTOList(driverService.searchDrivers(queryParam));
+    }
+
 }

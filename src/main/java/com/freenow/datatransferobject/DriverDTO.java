@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DriverDTO {
+
     @JsonIgnore
     private Long id;
 
