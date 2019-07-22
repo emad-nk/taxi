@@ -1,5 +1,14 @@
 # FREE NOW backend applicant test
 
+## NOTE
+
+For doing the driver search by characteristics, swagger is not friendly with Map query params, so please use Postman for it.
+
+An example to do the search:
+```
+http://localhost:8080/v1/drivers/search?username=driver09&seatcount=4&enginetype=gas&onlineStatus=ONLINE&convertible=false
+```
+
 ## Task Description
 You should be able to start the example application by executing com.freenow.FreeNowServerApplicantTestApplication, which starts a webserver on port 8080 (http://localhost:8080) and serves SwaggerUI where can inspect and try existing endpoints.
 
