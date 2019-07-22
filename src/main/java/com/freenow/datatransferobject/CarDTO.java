@@ -74,6 +74,7 @@ public class CarDTO {
     }
 
     @JsonProperty
+    @ApiModelProperty(hidden = true)
     public Long getId() {
         return id;
     }

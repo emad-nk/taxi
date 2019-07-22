@@ -10,8 +10,10 @@ import com.freenow.exception.EntityNotFoundException;
 import com.freenow.service.driver.DriverService;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,6 +31,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
+@RunWith(MockitoJUnitRunner.class)
 public class DriverControllerTest extends TestBase {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();

@@ -1,7 +1,6 @@
 package com.freenow.service.driver;
 
 import com.freenow.domainobject.DriverDO;
-import com.freenow.domainvalue.OnlineStatus;
 
 import java.util.List;
 import java.util.Map;

@@ -1,10 +1,6 @@
 package com.freenow.dataaccessobject;
 
 import com.freenow.domainobject.DriverDO;
-import com.freenow.domainvalue.OnlineStatus;
-
-import java.util.List;
-
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.CrudRepository;
 
@@ -14,7 +10,4 @@ import org.springframework.data.repository.CrudRepository;
  */
 public interface DriverRepository extends CrudRepository<DriverDO, Long>, JpaSpecificationExecutor<DriverDO> {
 
-    List<DriverDO> findByOnlineStatus(OnlineStatus onlineStatus);
-
-    DriverDO findByUsername(String username);
 }

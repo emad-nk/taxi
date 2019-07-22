@@ -9,6 +9,7 @@ import com.freenow.domainvalue.OnlineStatus;
 import com.freenow.exception.CarAlreadyInUseException;
 import com.freenow.exception.ConstraintsViolationException;
 import com.freenow.exception.EntityNotFoundException;
+import com.freenow.exception.ParseValueException;
 import com.freenow.search.SearchCriteria;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -157,6 +158,7 @@ public class DefaultDriverService implements DriverService {
      * Search drivers by criteria
      *
      * @param queryParams map of values containing the client search
+     * @throws ParseValueException if SearchCriteria cannot parse the provided values
      * @return list of drivers
      */
     @Override

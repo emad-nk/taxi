@@ -45,6 +45,7 @@ public class DriverDTO {
 
 
     @JsonProperty
+    @ApiModelProperty(hidden = true)
     public Long getId() {
         return id;
     }

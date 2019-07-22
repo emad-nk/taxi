@@ -7,15 +7,12 @@ import com.freenow.domainobject.CarDO;
 import com.freenow.domainobject.DriverDO;
 import com.freenow.domainvalue.*;
 import org.assertj.core.api.Assertions;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.io.IOException;
 import java.time.ZonedDateTime;
 
-@RunWith(MockitoJUnitRunner.class)
 public abstract class TestBase {
 
     public final void assertHttpStatus(MvcResult result, HttpStatus expected) {
@@ -26,9 +23,9 @@ public abstract class TestBase {
         Assertions.assertThatExceptionOfType(clazz).isThrownBy(block::run);
     }
 
-    public final  <T> T getMappedObjectDTO(MvcResult result, Class<T> clazz) throws IOException {
+    public final <T> T getMappedObjectDTO(MvcResult result, Class<T> clazz) throws IOException {
         final ObjectMapper mapper = new ObjectMapper();
-        return  mapper.readValue(result.getResponse().getContentAsString(), clazz);
+        return mapper.readValue(result.getResponse().getContentAsString(), clazz);
     }
 
     public CarDO getCarDO() {

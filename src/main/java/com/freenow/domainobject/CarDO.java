@@ -16,7 +16,7 @@ import java.time.ZonedDateTime;
 public class CarDO {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)

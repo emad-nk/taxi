@@ -17,7 +17,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class DriverDO {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)

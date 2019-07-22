@@ -7,7 +7,6 @@ import com.freenow.domainvalue.Manufacturer;
 import com.freenow.domainvalue.OnlineStatus;
 import com.freenow.domainvalue.Rating;
 import com.freenow.exception.ParseValueException;
-import com.freenow.exception.SearchException;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.Join;
@@ -25,7 +24,7 @@ public class SearchCriteria {
                 .map(k -> getSpecification(k).apply(queryParams.get(k)))
                 .reduce(Specification::and);
 
-        return reduce.orElseThrow(() -> new SearchException("Could not perform any search with provided query"));
+        return reduce.orElseThrow(() -> new ParseValueException("Could not perform search with provided query variables"));
     }
 
     private static Function<String, Specification<DriverDO>> getSpecification(String key) {
@@ -47,7 +46,7 @@ public class SearchCriteria {
             case "manufacturer":
                 return SearchCriteria::getDriversByCarManufacturer;
         }
-        throw new SearchException("Could not perform any search with provided query");
+        throw new ParseValueException("Could not perform search with provided query variables");
     }
 
     private static Specification<DriverDO> getDriversByUsername(String username) {
