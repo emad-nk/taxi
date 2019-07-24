@@ -45,7 +45,7 @@ public class DefaultCarService implements CarService {
         try {
             return carRepository.save(carDO);
         } catch (DataIntegrityViolationException e) {
-            LOGGER.warn("Some constraints are thrown due to car creation", e);
+            LOGGER.warn("ConstraintsViolationException while creating a car: {}", carDO, e);
             throw new ConstraintsViolationException(e.getMessage());
         }
     }

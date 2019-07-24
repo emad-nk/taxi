@@ -158,8 +158,8 @@ public class DefaultDriverService implements DriverService {
      * Search drivers by criteria
      *
      * @param queryParams map of values containing the client search
-     * @throws ParseValueException if SearchCriteria cannot parse the provided values
      * @return list of drivers
+     * @throws ParseValueException if SearchCriteria cannot parse the provided values
      */
     @Override
     public List<DriverDO> searchDrivers(Map<String, String> queryParams) {
