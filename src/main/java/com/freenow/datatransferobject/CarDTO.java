@@ -13,7 +13,8 @@ import javax.validation.constraints.NotNull;
 
 public class CarDTO {
 
-    @JsonIgnore
+    //@JsonIgnore
+    @ApiModelProperty(hidden = true)
     private Long id;
 
     @ApiModelProperty(example = "LLBB 1111", required = true)
@@ -42,6 +43,7 @@ public class CarDTO {
     @NotNull(message = "manufacturer can not be null!")
     private Manufacturer manufacturer;
 
+    @JsonIgnore
     private boolean selectedByDriver = false;
 
 
@@ -74,7 +76,7 @@ public class CarDTO {
     }
 
     @JsonProperty
-    @ApiModelProperty(hidden = true)
+    //@ApiModelProperty(hidden = true)
     public Long getId() {
         return id;
     }
@@ -104,6 +106,8 @@ public class CarDTO {
         return manufacturer;
     }
 
+    @JsonProperty
+    @ApiModelProperty(hidden = true)
     public boolean isSelectedByDriver() {
         return selectedByDriver;
     }

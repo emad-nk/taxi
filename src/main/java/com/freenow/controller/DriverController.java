@@ -3,6 +3,7 @@ package com.freenow.controller;
 import com.freenow.controller.mapper.DriverMapper;
 import com.freenow.datatransferobject.DriverDTO;
 import com.freenow.domainobject.DriverDO;
+import com.freenow.domainvalue.OnlineStatus;
 import com.freenow.service.driver.DriverService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -63,6 +65,14 @@ public class DriverController {
     }
 
 
+    @ApiOperation("Update driver online status")
+    @PutMapping("/status/{driverId}")
+    @ResponseStatus(HttpStatus.OK)
+    public DriverDTO updateOnlineStatus(@PathVariable long driverId, @RequestParam OnlineStatus onlineStatus) {
+        return DriverMapper.makeDriverDTO(driverService.updateOnlineStatus(driverId, onlineStatus));
+    }
+
+
     @ApiOperation("Select a car for a driver")
     @PutMapping("/select")
     @ResponseStatus(HttpStatus.OK)
@@ -82,7 +92,7 @@ public class DriverController {
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     public List<DriverDTO> searchDrivers(@RequestParam Map<String, String> queryParam) {
-        return DriverMapper.makeDriverDTOList(driverService.searchDrivers(queryParam));
+        return DriverMapper.makeDriverDTOList(driverService.searchDrivers(Collections.unmodifiableMap(queryParam)));
     }
 
 }

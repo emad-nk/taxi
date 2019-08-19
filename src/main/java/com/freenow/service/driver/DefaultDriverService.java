@@ -97,6 +97,14 @@ public class DefaultDriverService implements DriverService {
         return driverDO;
     }
 
+    @Override
+    @Transactional
+    public  DriverDO updateOnlineStatus(long driverId ,OnlineStatus onlineStatus){
+        DriverDO driverDO = findDriverChecked(driverId);
+        driverDO.setOnlineStatus(onlineStatus);
+        return driverDO;
+    }
+
 
     /**
      * Selects a car for a driver

@@ -19,7 +19,6 @@ public class SearchCriteria {
     private final static String CAR_FIELD = "carDO";
 
     public static Specification<DriverDO> getDriversBySpecification(Map<String, String> queryParams) {
-
         Optional<Specification<DriverDO>> reduce = queryParams.keySet().stream()
                 .map(k -> getSpecification(k).apply(queryParams.get(k)))
                 .reduce(Specification::and);

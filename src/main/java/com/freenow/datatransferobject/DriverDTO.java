@@ -1,17 +1,18 @@
 package com.freenow.datatransferobject;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freenow.domainvalue.GeoCoordinate;
+import com.freenow.domainvalue.OnlineStatus;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotNull;
+import java.util.Comparator;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DriverDTO {
 
-    @JsonIgnore
+    @ApiModelProperty(hidden = true)
     private Long id;
 
     @ApiModelProperty(example = "username", required = true)
@@ -22,8 +23,13 @@ public class DriverDTO {
     @NotNull(message = "Password can not be null!")
     private String password;
 
+    @ApiModelProperty(hidden = true)
+    private OnlineStatus onlineStatus;
+
+    @ApiModelProperty(hidden = true)
     private GeoCoordinate coordinate;
 
+    @ApiModelProperty(hidden = true)
     private CarDTO car;
 
 
@@ -31,11 +37,18 @@ public class DriverDTO {
     }
 
 
-    private DriverDTO(Long id, String username, String password, GeoCoordinate coordinate) {
+    private DriverDTO(Long id,
+                      String username,
+                      String password,
+                      OnlineStatus onlineStatus,
+                      GeoCoordinate coordinate,
+                      CarDTO car) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.coordinate = coordinate;
+        this.onlineStatus = onlineStatus;
+        this.car = car;
     }
 
 
@@ -45,7 +58,6 @@ public class DriverDTO {
 
 
     @JsonProperty
-    @ApiModelProperty(hidden = true)
     public Long getId() {
         return id;
     }
@@ -60,13 +72,19 @@ public class DriverDTO {
         return password;
     }
 
-
+    @JsonProperty
     public GeoCoordinate getCoordinate() {
         return coordinate;
     }
 
+    @JsonProperty
     public CarDTO getCar() {
         return car;
+    }
+
+    @JsonProperty
+    public OnlineStatus getOnlineStatus() {
+        return onlineStatus;
     }
 
     public static class DriverDTOBuilder {
@@ -75,6 +93,7 @@ public class DriverDTO {
         private String password;
         private GeoCoordinate coordinate;
         private CarDTO carDTO;
+        private OnlineStatus onlineStatus;
 
 
         public DriverDTOBuilder setId(Long id) {
@@ -105,10 +124,19 @@ public class DriverDTO {
             return this;
         }
 
-
-        public DriverDTO createDriverDTO() {
-            return new DriverDTO(id, username, password, coordinate);
+        public DriverDTOBuilder setOnlineStatus(OnlineStatus onlineStatus) {
+            this.onlineStatus = onlineStatus;
+            return this;
         }
 
+
+        public DriverDTO createDriverDTO() {
+            return new DriverDTO(id, username, password, onlineStatus, coordinate, carDTO);
+        }
+
+    }
+
+    public static Comparator<DriverDTO> idDescending() {
+        return (o1, o2) -> o2.id.compareTo(o1.id);
     }
 }
