@@ -1,4 +1,4 @@
-# FREE NOW backend applicant test
+# Backend applicant test
 
 ## NOTE
 
@@ -76,9 +76,6 @@ Secure the API so that authentication is needed to access it. The details are up
 Please include instructions how to authenticate/login, so that we can test the endpoints you implemented!
 
 ---
-
-Good luck!
-❤️ FREE NOW
 
 
 
