@@ -60,7 +60,7 @@ First come first serve: A car can be selected by exactly one ONLINE Driver. If a
 
 
 ## Task 3
-Imagine a driver management frontend that is used internally by FREE NOW employees to create and edit driver related data. For a new search functionality, we need an endpoint to search for drivers. It should be possible to search for drivers by their attributes (username, online_status) as well as car characteristics (license plate, rating, etc).
+Imagine a driver management frontend that is used internally by internal employees to create and edit driver related data. For a new search functionality, we need an endpoint to search for drivers. It should be possible to search for drivers by their attributes (username, online_status) as well as car characteristics (license plate, rating, etc).
 
 * implement a new endpoint for searching or extend an existing one
 * driver/car attributes as input parameters
